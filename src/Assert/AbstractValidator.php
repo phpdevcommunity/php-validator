@@ -20,8 +20,7 @@ abstract class AbstractValidator implements ValidatorInterface
     {
         return $this->error;
     }
-
-
+    
     /**
      * Set the error message by replacing placeholders with values from the context array
      *

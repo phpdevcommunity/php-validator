@@ -41,6 +41,9 @@ final class Validation
             if (!is_array($validators)) {
                 $validators = [$validators];
             }
+            if (!is_string($field)) {
+                throw new InvalidArgumentException('The field name must be a string');
+            }
             $this->addValidator($field, $validators);
         }
     }

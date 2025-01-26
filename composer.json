@@ -13,7 +13,10 @@
     "psr-4": {
       "PhpDevCommunity\\Validator\\": "src",
       "Test\\PhpDevCommunity\\Validator\\": "tests"
-    }
+    },
+    "files": [
+      "functions/helpers.php"
+    ]
   },
   "minimum-stability": "alpha",
   "require": {
