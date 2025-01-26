@@ -2,6 +2,8 @@
 
 namespace PhpDevCommunity\Validator;
 
+use PhpDevCommunity\Validator\Assert\Collection;
+use PhpDevCommunity\Validator\Assert\Item;
 use PhpDevCommunity\Validator\Assert\ValidatorInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,6 +19,8 @@ use function trim;
 
 final class Validation
 {
+    private ValidationProcessor $processor;
+
     /**
      * @var array<string,array>
      */
@@ -31,6 +35,8 @@ final class Validation
 
     public function __construct(array $fieldValidators)
     {
+        $this->processor = new ValidationProcessor();
+
         foreach ($fieldValidators as $field => $validators) {
             if (!is_array($validators)) {
                 $validators = [$validators];
@@ -66,23 +72,23 @@ final class Validation
     public function validateArray(array $data): bool
     {
         $this->data = $data;
+        $this->executeValidators($this->validators,  $this->data);
+        return $this->getErrors() === [];
+    }
 
+    private function executeValidators(array $validatorsByField, array &$data): void
+    {
         /**
          * @var $validators array<ValidatorInterface>
          */
-        foreach ($this->validators as $field => $validators) {
-            if (!isset($this->data[$field])) {
-                $this->data[$field] = null;
+        foreach ($validatorsByField as $field => $validators) {
+            if (!isset($data[$field])) {
+                $data[$field] = null;
             }
 
-            foreach ($validators as $validator) {
-                if ($validator->validate($this->data[$field]) === false) {
-                    $this->addError($field, (string)$validator->getError());
-                }
-            }
-
+            $errors = $this->processor->process($validators, $field, $data[$field]);
+            $this->errors = array_merge($this->errors, $errors);
         }
-        return $this->getErrors() === [];
     }
 
     /**
@@ -99,18 +105,6 @@ final class Validation
     public function getData(): array
     {
         return $this->data;
-    }
-
-    /**
-     * Add an error for a specific field.
-     *
-     * @param string $field The field for which the error occurred
-     * @param string $message The error message
-     * @return void
-     */
-    private function addError(string $field, string $message): void
-    {
-        $this->errors[$field][] = $message;
     }
 
     /**

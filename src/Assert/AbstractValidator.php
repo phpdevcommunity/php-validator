@@ -37,6 +37,8 @@ abstract class AbstractValidator implements ValidatorInterface
                 $value = method_exists($value, '__toString') ? (string)$value : get_class($value);
             } elseif (is_array($value)) {
                 $value = json_encode($value);
+            } elseif (is_bool($value)) {
+                $value = $value ? 'true' : 'false';
             } else {
                 $value = (string)$value;
             }

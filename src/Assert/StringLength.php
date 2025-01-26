@@ -9,7 +9,7 @@ use function strlen;
 
 final class StringLength extends AbstractValidator
 {
-    private string $invalidMessage = 'Invalid type given. String expected.';
+    private string $invalidMessage = '{{ value }} is not a valid string.';
     private string $minMessage = '{{ value }} must be at least {{ limit }} characters long';
     private string $maxMessage = '{{ value }} cannot be longer than {{ limit }} characters';
     private ?int $min = null;

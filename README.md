@@ -103,6 +103,81 @@ if ($validation->validateArray($data) === true) {
 }
 ```
 
+#### Example: Validating Nested Objects with `Item`
+
+The `Item` rule allows you to validate nested objects or associative arrays with specific rules for each key.
+
+```php
+use PhpDevCommunity\Validator\Validation;
+use PhpDevCommunity\Validator\Rules\NotNull;
+use PhpDevCommunity\Validator\Rules\Item;
+use PhpDevCommunity\Validator\Rules\StringLength;
+use PhpDevCommunity\Validator\Rules\Alphabetic;
+
+// Define validation rules for a nested object (e.g., a "person" object)
+$validation = new Validation([
+    'person' => [new NotNull(), new Item([
+        'first_name' => [new NotNull(), new Alphabetic(), (new StringLength())->min(3)],
+        'last_name' => [new NotNull(), new Alphabetic(), (new StringLength())->min(3)],
+    ])]
+]);
+
+// Example data
+$data = [
+    'person' => [
+        'first_name' => 'John',
+        'last_name' => 'Doe'
+    ]
+];
+
+// Validate the data
+if ($validation->validateArray($data) === true) {
+    echo "Person object is valid!";
+} else {
+    $errors = $validation->getErrors();
+    echo "Validation errors: " . json_encode($errors, JSON_PRETTY_PRINT);
+}
+```
+
+#### Example: Validating Arrays of Items with `Collection`
+
+The `Collection` rule is used to validate arrays where each item in the array must satisfy a set of rules.
+
+```php
+use PhpDevCommunity\Validator\Validation;
+use PhpDevCommunity\Validator\Rules\NotEmpty;
+use PhpDevCommunity\Validator\Rules\Collection;
+use PhpDevCommunity\Validator\Rules\Item;
+use PhpDevCommunity\Validator\Rules\NotNull;
+use PhpDevCommunity\Validator\Rules\StringLength;
+
+// Define validation rules for a collection of articles
+$validation = new Validation([
+    'articles' => [new NotEmpty(), new Collection([
+        new Item([
+            'title' => [new NotNull(), (new StringLength())->min(3)],
+            'body' => [new NotNull(), (new StringLength())->min(10)],
+        ])
+    ])]
+]);
+
+// Example data
+$data = [
+    'articles' => [
+        ['title' => 'Article 1', 'body' => 'This is the body of the first article.'],
+        ['title' => 'Article 2', 'body' => 'Second article body here.']
+    ]
+];
+
+// Validate the data
+if ($validation->validateArray($data) === true) {
+    echo "Articles are valid!";
+} else {
+    $errors = $validation->getErrors();
+    echo "Validation errors: " . json_encode($errors, JSON_PRETTY_PRINT);
+}
+```
+
 #### URL Validation
 
 Validate a URL to ensure it is not null and is a valid URL format.
