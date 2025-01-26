@@ -26,8 +26,8 @@ Validate an email address to ensure it is not null and matches the standard emai
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Email;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Email;
 
 // Instantiate Validation object for email validation
 $validation = new Validation([
@@ -52,8 +52,8 @@ Validate the age to ensure it is a non-null integer and is 18 or older.
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Integer;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Integer;
 
 // Instantiate Validation object for age validation
 $validation = new Validation([
@@ -82,9 +82,9 @@ Ensure that a username is not null, has a minimum length of 3 characters, and co
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Alphanumeric;
-use PhpDevCommunity\Validator\Rules\StringLength;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Alphanumeric;
+use PhpDevCommunity\Validator\Assert\StringLength;
 
 // Instantiate Validation object for username validation
 $validation = new Validation([
@@ -109,10 +109,10 @@ The `Item` rule allows you to validate nested objects or associative arrays with
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Item;
-use PhpDevCommunity\Validator\Rules\StringLength;
-use PhpDevCommunity\Validator\Rules\Alphabetic;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Item;
+use PhpDevCommunity\Validator\Assert\StringLength;
+use PhpDevCommunity\Validator\Assert\Alphabetic;
 
 // Define validation rules for a nested object (e.g., a "person" object)
 $validation = new Validation([
@@ -145,11 +145,11 @@ The `Collection` rule is used to validate arrays where each item in the array mu
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotEmpty;
-use PhpDevCommunity\Validator\Rules\Collection;
-use PhpDevCommunity\Validator\Rules\Item;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\StringLength;
+use PhpDevCommunity\Validator\Assert\NotEmpty;
+use PhpDevCommunity\Validator\Assert\Collection;
+use PhpDevCommunity\Validator\Assert\Item;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\StringLength;
 
 // Define validation rules for a collection of articles
 $validation = new Validation([
@@ -184,8 +184,8 @@ Validate a URL to ensure it is not null and is a valid URL format.
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Url;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Url;
 
 // Instantiate Validation object for URL validation
 $validation = new Validation([
@@ -210,8 +210,8 @@ Validate a numeric value to ensure it is not null and represents a valid numeric
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Numeric;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Numeric;
 
 // Instantiate Validation object for numeric value validation
 $validation = new Validation([
@@ -236,8 +236,8 @@ Implement a custom validation rule using a callback function.
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Custom;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Custom;
 
 // Custom validation function to check if the value is a boolean
 $isBoolean = function ($value) {
@@ -273,9 +273,9 @@ Suppose you have a user registration form with fields like `username`, `email`, 
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Email;
-use PhpDevCommunity\Validator\Rules\Integer;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Email;
+use PhpDevCommunity\Validator\Assert\Integer;
 
 // Define validation rules for each field
 $validation = new Validation([
@@ -315,8 +315,8 @@ Consider validating input data received via an API endpoint. Here's how you can 
 
 ```php
 use PhpDevCommunity\Validator\Validation;
-use PhpDevCommunity\Validator\Rules\NotNull;
-use PhpDevCommunity\Validator\Rules\Numeric;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Numeric;
 
 // Define validation rules for API input data
 $validation = new Validation([
@@ -351,7 +351,7 @@ In this example:
 ### Additional Features
 
 - **Simple Interface**: Easily define validation rules using a straightforward interface.
-- **Extensible**: Extend the library with custom validation rules by implementing the `RuleInterface`.
+- **Extensible**: Extend the library with custom validation rules by implementing the `ValidatorInterface`.
 - **Error Handling**: Retrieve detailed validation errors for each field.
 
 ---
