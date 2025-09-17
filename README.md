@@ -72,6 +72,53 @@ if ($validation->validateArray($data) === true) {
 }
 ```
 
+### Example 3: Converting Empty Strings to `null`
+
+By default, when using `validate(ServerRequestInterface $request)`, the **convertEmptyToNull** option is automatically enabled.
+This ensures that all empty strings (`""`) are converted to `null` before validation.
+
+When using `validateArray(array $data)` directly, you need to enable this option manually:
+
+```php
+use PhpDevCommunity\Validator\Validation;
+use PhpDevCommunity\Validator\Assert\NotNull;
+use PhpDevCommunity\Validator\Assert\Item;
+use PhpDevCommunity\Validator\Assert\Alphabetic;
+
+// Define validation rules
+$validation = new Validation([
+    'person' => [new NotNull(), new Item([
+        'first_name' => [new NotNull(), new Alphabetic()],
+        'last_name'  => [new NotNull(), new Alphabetic()],
+    ])]
+]);
+
+// Example input with an empty string
+$validInput = [
+    'person' => [
+        'first_name' => '',     // will be converted to null
+        'last_name'  => 'Doe'
+    ]
+];
+
+// Manually enable conversion of "" to null
+$validation->convertEmptyToNull();
+
+if ($validation->validateArray($validInput) === true) {
+    echo "Data is valid!";
+} else {
+    $errors = $validation->getErrors();
+    echo "Validation errors: " . json_encode($errors, JSON_PRETTY_PRINT);
+}
+```
+
+In this example:
+
+* Before validation, empty strings are converted to `null`.
+* This prevents validators such as `NotNull()` from failing because of an empty string.
+* When using `validate($request)` with a PSR-7 request, this option is automatically enabled.
+
+
 ### Additional Examples
 
 Let's explore more examples covering various validators:

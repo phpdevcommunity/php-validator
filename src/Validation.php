@@ -48,6 +48,16 @@ final class Validation
         }
     }
 
+    public function convertEmptyToNull(): void
+    {
+        $this->processor->convertEmptyToNull();
+    }
+
+    public function noConvertEmptyToNull(): void
+    {
+        $this->processor->noConvertEmptyToNull();
+    }
+
     /**
      * Validate the server request data.
      *
@@ -56,14 +66,10 @@ final class Validation
      */
     public function validate(ServerRequestInterface $request): bool
     {
-        $data = array_map(function ($value) {
-            if (is_string($value) && empty(trim($value))) {
-                return null;
-            }
-            return $value;
-        }, array_merge($request->getParsedBody(), $request->getUploadedFiles()));
-
-        return $this->validateArray($data);
+        $this->convertEmptyToNull();
+        $result =  $this->validateArray(array_merge($request->getParsedBody(), $request->getUploadedFiles()));
+        $this->noConvertEmptyToNull();
+        return $result;
     }
 
     /**
@@ -81,6 +87,7 @@ final class Validation
 
     private function executeValidators(array $validatorsByField, array &$data): void
     {
+        $this->errors = [];
         /**
          * @var $validators array<ValidatorInterface>
          */

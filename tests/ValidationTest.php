@@ -68,6 +68,31 @@ class ValidationTest extends TestCase
             'invoice_total' => '2000.25',
             'active' => true,
         ])));
+
+        $this->assertFalse($validation->validateArray([
+            'email' => 'dev@phpdevcommunity.com',
+            'password' => 'Mypassword',
+            'firstname' => 'phpdevcommunity',
+            'lastname' => '',
+            'gender' => 'Mr',
+            'website' => 'https://www.phpdevcommunity.com',
+            'age' => 20,
+            'invoice_total' => '2000.25',
+            'active' => true,
+        ]));
+
+        $validation->convertEmptyToNull();
+        $this->assertTrue($validation->validateArray([
+            'email' => 'dev@phpdevcommunity.com',
+            'password' => 'Mypassword',
+            'firstname' => 'phpdevcommunity',
+            'lastname' => '',
+            'gender' => 'Mr',
+            'website' => 'https://www.phpdevcommunity.com',
+            'age' => 20,
+            'invoice_total' => '2000.25',
+            'active' => true,
+        ]));
     }
 
     public function testError()
@@ -97,7 +122,9 @@ class ValidationTest extends TestCase
 
         $this->assertStrictEquals(7, count($validation->getErrors()));
         $errors = $validation->getErrors();
-        $this->assertStrictEquals(2, count($errors['firstname']));
+        /** @var string[] $errorsFirstName */
+        $errorsFirstName = $errors['firstname'];
+        $this->assertStrictEquals(2, count($errorsFirstName));
 
         $this->assertStrictEquals($errors['email'][0], 'dev@phpdevcommunity is not a valid email address.');
         $this->assertStrictEquals($errors['active'][0], '"yes" is not valid');
@@ -106,7 +133,7 @@ class ValidationTest extends TestCase
     {
         $validation = new Validation([
             'person' => [new NotEmpty(), new Item([
-                'first_name' => [new NotNull(), new Alphabetic(), (new StringLength())->min(3)],
+                'first_name' => [new Alphabetic(), (new StringLength())->min(3)],
                 'last_name' => [new NotNull(), new Alphabetic(), (new StringLength())->min(3)],
             ])]
         ]);
@@ -125,13 +152,26 @@ class ValidationTest extends TestCase
         $invalidInput = [
             'person' => [
                 'first_name' => '',
-                'last_name' => null
+                'last_name' => 'Doe'
             ]
         ];
 
-        $result = $validation->validate(Request::create($invalidInput));
+        $result = $validation->validateArray($invalidInput);
         $this->assertFalse($result);
         $this->assertNotEmpty($validation->getErrors());
+
+
+        $validInput = [
+            'person' => [
+                'first_name' => '',
+                'last_name' => 'Doe'
+            ]
+        ];
+
+        $validation->convertEmptyToNull();
+        $result = $validation->validateArray($validInput);
+        $this->assertTrue($result);
+        $this->assertEmpty($validation->getErrors());
     }
 
     public function testEmailValidation(): void
@@ -205,6 +245,15 @@ class ValidationTest extends TestCase
         $this->assertTrue($result);
         $this->assertEmpty($validation->getErrors());
 
+        $result = $validation->validateArray($input);
+        $this->assertTrue($result);
+        $this->assertEmpty($validation->getErrors());
+
+        $input['articles'][1]['user']['email'] = '';
+        $this->assertFalse($validation->validateArray($input));
+        $validation->convertEmptyToNull();
+        $this->assertTrue($validation->validateArray($input));
+
         $invalidInput = [
             'articles' => [
                 [
@@ -224,6 +273,7 @@ class ValidationTest extends TestCase
         $this->assertFalse($result);
         $this->assertNotEmpty($validation->getErrors());
         $this->assertStrictEquals(6, count($validation->getErrors()));
+
     }
 
 }

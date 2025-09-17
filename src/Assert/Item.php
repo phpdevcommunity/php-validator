@@ -23,6 +23,18 @@ final class Item extends AbstractValidator
         $this->validation  = new Validation($validators);
     }
 
+    public function convertEmptyToNull(): self
+    {
+        $this->validation->convertEmptyToNull();
+        return $this;
+    }
+
+    public function noConvertEmptyToNull(): self
+    {
+        $this->validation->noConvertEmptyToNull();
+        return $this;
+    }
+
     public function validate($value): bool
     {
         if ($value === null) {

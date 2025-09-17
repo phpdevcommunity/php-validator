@@ -16,6 +16,8 @@ final class Collection extends AbstractValidator
      * @param array<ValidatorInterface> $validators
      */
     private array $validators;
+
+    private ValidationProcessor $validationProcessor;
     private array $errors = [];
 
     /**
@@ -29,7 +31,20 @@ final class Collection extends AbstractValidator
             }
         }
         $this->validators = $validators;
+        $this->validationProcessor = new ValidationProcessor();
     }
+    public function convertEmptyToNull(): self
+    {
+        $this->validationProcessor->convertEmptyToNull();
+        return $this;
+    }
+
+    public function noConvertEmptyToNull(): self
+    {
+        $this->validationProcessor->noConvertEmptyToNull();
+        return $this;
+    }
+
     public function validate($value): bool
     {
         if ($value === null) {
@@ -41,10 +56,9 @@ final class Collection extends AbstractValidator
             return false;
         }
 
-        $validationProcessor = new ValidationProcessor();
         $errors = [];
         foreach ($value as $key => $element) {
-            $errors = array_merge($errors, $validationProcessor->process($this->validators, $key, $element));
+            $errors = array_merge($errors, $this->validationProcessor->process($this->validators, $key, $element));
         }
 
         if ($errors !== []) {
